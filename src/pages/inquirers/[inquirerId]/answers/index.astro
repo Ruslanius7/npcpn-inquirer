@@ -1,0 +1,102 @@
+---
+import { getEntry } from "astro:content";
+import { nanoid } from "nanoid";
+
+import { InquirerAnswers } from "~/api/InquirerAnswers";
+import Layout from "~/layouts/Layout.astro";
+import { formatDateTime } from "~/utils/formatDateTime";
+
+const { inquirerId } = Astro.params;
+
+if (inquirerId === undefined) {
+  return Astro.redirect("/inquirers");
+}
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+
+  const answers: Record<string, string> = {};
+
+  data.forEach((value, key) => {
+    answers[key] = value.toString();
+  });
+
+  const resultId = nanoid();
+
+  const result = new InquirerAnswers({
+    id: resultId,
+    date: Date.now(),
+    answers,
+    inquirerId,
+  });
+
+  result.save();
+
+  return Astro.redirect(`/inquirers/${inquirerId}/answers/${resultId}`);
+}
+
+const inquirerEntry = await getEntry("inquirers", inquirerId);
+
+if (!inquirerEntry) {
+  return Astro.redirect("/inquirers");
+}
+
+const inquirer = inquirerEntry.data;
+
+const results = InquirerAnswers.getAll({ inquirerId });
+---
+
+<Layout title={inquirer.title}>
+  <a href="/inquirers">Назад</a>
+
+  
+
+  <h2>{inquirer.title}</h2>
+
+  <a href=`/inquirers/${inquirerId}`>Пройти</a>
+
+  <h3>Список проведенных опросов</h3>
+
+  <ul>
+    {
+      results.map((result) => (
+        <li>
+          <a href={`/inquirers/${inquirerId}/answers/${result.id}`}>
+            {formatDateTime(result.date)}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Layout>
+<style>
+a {
+  outline: none;
+  text-decoration: none;
+  padding: 2px 1px 0;
+}
+
+a:link {
+  color: #265301;
+}
+
+a:visited {
+  color: #437a16;
+}
+
+a:focus {
+  border-bottom: 1px solid;
+  background: #bae498;
+}
+
+a:hover {
+  border-bottom: 1px solid;
+  background: #cdfeaa;
+}
+
+a:active {
+  background: #265301;
+  color: #cdfeaa;
+}
+
+</style>

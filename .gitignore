@@ -1,0 +1,8 @@
+/.dockerignore
+/docker-compose.yml
+/Dockerfile
+/node_modules
+/package-lock.json
+/package.json
+/README.md
+/__MACOSX

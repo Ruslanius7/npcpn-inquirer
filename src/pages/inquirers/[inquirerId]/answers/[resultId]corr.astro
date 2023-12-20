@@ -1,0 +1,123 @@
+---
+import { InquirerResult } from "~/api/InquirerResult";
+import Layout from "~/layouts/Layout.astro";
+
+const { inquirerId, resultId } = Astro.params;
+
+if (inquirerId === undefined || resultId === undefined) {
+  return Astro.redirect("/inquirers");
+}
+
+const result = await InquirerResult.get(resultId);
+
+if (!result) {
+  return Astro.redirect("/inquirers");
+}
+---
+
+<Layout title={result.inquirer.data.title}>
+  <a href=`/inquirers/${inquirerId}/answers`>Назад</a>
+
+  <h1>Результаты опроса</h1>
+
+  <p>{result.inquirer.data.description}</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Вопрос</th>
+        <th>Ответ</th>
+        <th>Вес</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {
+        result.answers.map((answer) => (
+          <tr>
+            <td>{answer.questionText}</td>
+            <td>{answer.answerText}</td>
+            <td>{answer.answerWeight}</td>
+          </tr>
+        ))
+      }
+
+      <tr>
+        <td colspan="2"><b>Итого</b></td>
+        <td><b>{result.totalWeight}</b></td>
+      </tr>
+      <tr>
+        <td colspan="2"><b>Интраперсональные функции</b></td>
+        <td><b>{result.fun1234Weight/4}</b></td>
+      </tr>
+      <tr>
+        <td>Регуляция аффекта</td>
+        <td colspan="2"><b>{result.fun1Weight}</b></td>
+      </tr>
+       <tr>
+        <td>Самонаказание</td>
+        <td colspan="2"><b>{result.fun2Weight}</b></td>
+      </tr>
+       <tr>
+        <td>Антидиссоциативная</td>
+        <td colspan="2"><b>{result.fun3Weight}</b></td>
+      </tr>
+       <tr>
+        <td>Антисуицид</td>
+        <td colspan="2"><b>{result.fun4Weight}</b></td>
+      </tr>
+      <tr>
+        <td colspan="2"><b>Интерперсональные функции</b></td>
+        <td><b>{result.fun513Weight/13}</b></td>
+      </tr>
+       <tr>
+        <td>Проведение границ между собой и окружающими</td>
+        <td colspan="2"><b>{result.fun5Weight}</b></td>
+      </tr>
+       <tr>
+        <td>Забота о себе</td>
+        <td colspan="2"><b>{result.fun6Weight}</b></td>
+      </tr>
+       <tr>
+        <td>Поиск ощущений</td>
+        <td colspan="2"><b>{result.fun7Weight}</b></td>
+      </tr>
+       <tr>
+        <td>Попытка соответствовать сверстникам</td>
+        <td colspan="2"><b>{result.fun8Weight}</b></td>
+      </tr>
+       <tr>
+        <td>Влияние на окружение</td>
+        <td colspan="2"><b>{result.fun9Weight}</b></td>
+      </tr>
+       <tr>
+        <td>Проверить себя на стойкость</td>
+        <td colspan="2"><b>{result.fun10Weight}</b></td>
+      </tr>
+       <tr>
+        <td>Месть</td>
+        <td colspan="2"><b>{result.fun11Weight}</b></td>
+      </tr>
+       <tr>
+        <td>Автономия</td>
+        <td colspan="2"><b>{result.fun12Weight}</b></td>
+      </tr>
+       <tr>
+        <td>Фиксация дистресса</td>
+        <td colspan="2"><b>{result.fun13Weight} </b></td>
+      </tr>
+    </tbody>
+  </table>
+</Layout>
+<style>
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td,
+  th {
+    border: 1px solid black;
+    padding: 4px;
+  }
+</style>
