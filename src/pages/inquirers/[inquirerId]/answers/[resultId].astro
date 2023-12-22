@@ -1,4 +1,6 @@
 ---
+// Импортируем модуль InquirerResult и компонент Layout. Получаем inquirerId и resultId из параметров запроса. 
+// Если один из них не определен, то происходит перенаправление на страницу /inquirers.
 import { InquirerResult } from "~/api/InquirerResult";
 import Layout from "~/layouts/Layout.astro";
 
@@ -8,6 +10,7 @@ if (inquirerId === undefined || resultId === undefined) {
   return Astro.redirect("/inquirers");
 }
 
+// Получаем результат опроса по resultId. Если результат не найден, то происходит перенаправление на страницу /inquirers.
 const result = await InquirerResult.get(resultId);
 
 if (!result) {

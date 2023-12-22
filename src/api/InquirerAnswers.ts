@@ -1,6 +1,8 @@
+// Импортируются константы и класс для работы с базой данных.
 import { DATABASE_PATH } from "~/constants";
-import { Repository } from "~/utils/Repository";
+import { Repository } from "~/utils/Repository";  
 
+// Определяется интерфейс для объекта ответов на опрос.
 export interface InquirerAnswersDTO {
   readonly id: string;
   readonly inquirerId: string;
@@ -8,10 +10,12 @@ export interface InquirerAnswersDTO {
   readonly date: number;
 }
 
+// Определяется интерфейс для параметров фильтрации ответов на опрос.
 export interface InquirerAnswersFilterParams {
   inquirerId?: string;
 }
 
+// Определяется класс InquirerAnswers, который реализует интерфейс InquirerAnswersDTO.  
 export class InquirerAnswers implements InquirerAnswersDTO {
   private static _repository = new Repository<InquirerAnswersDTO>(
     DATABASE_PATH,
@@ -23,6 +27,7 @@ export class InquirerAnswers implements InquirerAnswersDTO {
   public readonly answers: Record<string, string>;
   public readonly date: number;
 
+  // В конструкторе класса принимается объект типа InquirerAnswersDTO и на его основе создаются свойства экземпляра класса.
   public constructor(dto: InquirerAnswersDTO) {
     this.id = dto.id;
     this.inquirerId = dto.inquirerId;
@@ -39,16 +44,19 @@ export class InquirerAnswers implements InquirerAnswersDTO {
     };
   }
 
+  // Cохраняет объект в базу данных
   public save(): void {
     InquirerAnswers._repository.save(this.id, this.DTO);
   }
 
+ // Возвращает объект из базы данных по заданному id
   public static get(id: string): InquirerAnswers | undefined {
     const dto = InquirerAnswers._repository.get(id);
 
     return dto ? new InquirerAnswers(dto) : undefined;
   }
 
+ // Возвращает все объекты из базы данных с возможностью фильтрации по параметру inquirerId.
   public static getAll({
     inquirerId,
   }: InquirerAnswersFilterParams = {}): InquirerAnswers[] {

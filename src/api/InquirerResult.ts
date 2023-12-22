@@ -10,12 +10,16 @@ interface InquirerResultAnswerDTO {
 
 type InquirerEntry = CollectionEntry<"inquirers">;
 
+ // Определяется класс InquirerResult, который принимает два параметра: объект типа InquirerEntry для опроса и объект типа InquirerAnswers для ответов на опрос. 
 export class InquirerResult {
   private constructor(
     public readonly inquirer: InquirerEntry,
     public readonly inquirerAnswers: InquirerAnswers
   ) {}
 
+  // Определяется статический метод get(), который получает объект InquirerResult по заданному id ответов на опрос. 
+  // Если объект не найден, то выбрасывается ошибка. Затем метод получает объект типа InquirerEntry для опроса по id опроса из объекта answers. 
+  // Если объект не найден, то выбрасывается ошибка. Возвращается новый объект InquirerResult с полученными объектами inquirerEntry и answers.
   public static async get(answersId: string): Promise<InquirerResult> {
     const answers = InquirerAnswers.get(answersId);
 
@@ -34,6 +38,9 @@ export class InquirerResult {
 
   private _answers: InquirerResultAnswerDTO[] | undefined;
 
+  // Определяется геттер answers, который возвращает массив объектов типа InquirerResultAnswerDTO, 
+  // содержащий текст вопроса, текст ответа и его вес. Если массив уже был вычислен, то он возвращается из приватного свойства _answers. 
+  // Если массив еще не вычислен, то он вычисляется на основе данных опроса и ответов на опрос и сохраняется в приватное свойство _answers, а затем возвращается.
   public get answers(): InquirerResultAnswerDTO[] {
     let answers = this._answers;
 
@@ -58,6 +65,9 @@ export class InquirerResult {
 
     return answers;
   }
+
+  // Определяется геттер fun1234Weight, который вычисляет вес ответов на вопросы, относящиеся к категориям "Fun 1", "Fun 2", "Fun 3" и "Fun 4". 
+  // Возвращается сумма весов ответов на эти вопросы.
   public get fun1234Weight(): number {
     return this.answers.reduce((fun1234Weight, answer) => {
       if (["1", "14", "27","3", "16", "29","5", "18", "31","6", "19", "32"].includes(answer.questionId)) {
